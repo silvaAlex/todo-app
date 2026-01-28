@@ -9,5 +9,5 @@ public class User
     public DateTime? CreatedDate { get; set; } = DateTime.UtcNow;
 
 
-    public ICollection<Task> Tasks { get; set; } = [];
+    public ICollection<TaskModel> Tasks { get; set; } = [];
 }
