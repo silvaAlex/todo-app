@@ -3,41 +3,43 @@ using TodoApp.API.Data;
 using Microsoft.EntityFrameworkCore;
 using TodoApp.API.Notifications;
 
-namespace TodoApp.API.Repositories
+namespace TodoApp.API.Repositories;
+
+public class TaskRepository(TodoAppDbContext context, DomainNotifier notifier) : BaseRepository<TaskModel>(context, notifier), ITaskRepository
 {
-    public class TaskRepository(TodoAppDbContext context, DomainNotifier notifier) : BaseRepository<TaskModel>(context), ITaskRepository
+    private readonly DomainNotifier _notifier = notifier;
+
+    public async Task<IEnumerable<TaskModel>> GetTasksByCategory(string category)
     {
-        public async Task<IEnumerable<TaskModel>> GetTasksByCategory(string category)
-        {
-            List<TaskModel> tasks;
-            tasks = await _dbSet.Where(t => t.Category == category).ToListAsync();
+        List<TaskModel> tasks;
+        tasks = await _dbSet.Where(t => t.Category == category).ToListAsync();
 
-            return tasks ?? [];
+        return tasks ?? [];
+    }
+
+    public async Task<IEnumerable<TaskModel>> GetTasksByUserAsync(Guid userId)
+    {
+        List<TaskModel> tasks;
+        tasks = await _dbSet.Where(t => t.UserId == userId).ToListAsync();
+
+        return tasks ?? [];
+    }
+
+    public async Task CompleteTaskAsync(Guid id)
+    {
+        var entity = await GetByIdAsync(id);
+
+        if (entity == null)
+        {
+            _notifier.AddNotification(new Notification("TaskNotFound", $"a task com {id} não foi encontrada"));
+            return;
         }
 
-        public async Task<IEnumerable<TaskModel>> GetTasksByUserAsync(Guid userId)
-        {
-            List<TaskModel> tasks;
-            tasks = await _dbSet.Where(t => t.UserId == userId).ToListAsync();
+        entity.IsCompleted = true;
+        entity.UpdatedAt = DateTime.UtcNow;
 
-            return tasks ?? [];
-        }
-
-        public async Task CompleteTaskAsync(Guid id)
-        {
-            var entity = await GetByIdAsync(id);
-
-            if (entity == null)
-            {
-                notifier.AddNotification(new Notification("TaskNotFound", $"a task com {id} não foi encontrada"));
-                return;
-            }
-
-            entity.IsCompleted = true;
-            entity.UpdatedAt = DateTime.UtcNow;
-
-            Update(entity);
-            await SaveChangesAsync();
-        }
+        Update(entity);
+        await SaveChangesAsync();
     }
 }
+

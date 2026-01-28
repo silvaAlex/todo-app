@@ -6,7 +6,7 @@ public class User
     public Guid Id { get; set; } = Guid.NewGuid();
     public string? UserName { get; set; }
     public string? PasswordHash { get; set; } 
-    public DateTime? CreatedDate { get; set; } = DateTime.UtcNow;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
 
     public ICollection<TaskModel> Tasks { get; set; } = [];
