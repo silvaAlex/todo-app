@@ -6,11 +6,11 @@ using TodoApp.API.Services;
 
 namespace TodoApp.API.UseCases
 {
-    public class UserService(IUserRepository repository, DomainNotifier notifier) : IUserService
+    public class UserService(IUserRepository repository, DomainNotifier notifier, ITokenService tokenService) : IUserService
     {
         public IReadOnlyCollection<Notification> Notifications => notifier.Notifications;
 
-        public async Task<UserReadDto?> LoginAsync(UserLoginDto userDto)
+        public async Task<TokenUserDto?> LoginAsync(UserLoginDto userDto)
         {
             User? user = await repository.GetUserByUserName(userDto.UserName);
 
@@ -20,8 +20,12 @@ namespace TodoApp.API.UseCases
                 return null;
             }
 
-            if(!string.IsNullOrEmpty(user.UserName))
-                return new UserReadDto(user.Id, user.UserName, user.CreatedAt);
+            if (!string.IsNullOrEmpty(user.UserName))
+            {
+                var token = tokenService.GenerateToken(user);
+
+                return new TokenUserDto(token, new UserReadDto(user.Id, user.UserName, user.CreatedAt));
+            }
 
             return null;
         }

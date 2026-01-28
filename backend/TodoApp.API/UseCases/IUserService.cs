@@ -6,7 +6,7 @@ namespace TodoApp.API.UseCases;
 public interface IUserService
 {
     Task<UserReadDto?> RegisterAsync(UserCreateDto user);
-    Task<UserReadDto?> LoginAsync(UserLoginDto user);
+    Task<TokenUserDto?> LoginAsync(UserLoginDto user);
     IReadOnlyCollection<Notification> Notifications { get; }
 }
 
