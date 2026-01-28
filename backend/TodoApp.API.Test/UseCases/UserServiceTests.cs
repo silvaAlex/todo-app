@@ -1,4 +1,4 @@
-using Moq;
+ using Moq;
 using TodoApp.Api.Models;
 using TodoApp.API.DTOs;
 using TodoApp.API.Notifications;
@@ -9,13 +9,14 @@ namespace TodoApp.API.Test.UseCases;
 
 public class UserServiceTests
 {
+    private readonly Mock<ITokenService> _tokenService = new()
     private readonly Mock<IUserRepository> _userRepoMock = new();
     private readonly DomainNotifier _notifier = new();
     private readonly UserService _userService;
 
     public UserServiceTests()
     {
-        _userService = new UserService(_userRepoMock.Object, _notifier);
+        _userService = new UserService(_userRepoMock.Object, _notifier, _tokenService);
     }
 
     [Fact]
