@@ -2,6 +2,7 @@
 using TodoApp.API.DTOs;
 using TodoApp.API.Notifications;
 using TodoApp.API.Repositories;
+using TodoApp.API.Services;
 
 namespace TodoApp.API.UseCases
 {
@@ -13,7 +14,7 @@ namespace TodoApp.API.UseCases
         {
             User? user = await repository.GetUserByUserName(userDto.UserName);
 
-            if (user == null || user.PasswordHash != userDto.Password)
+            if (user == null || !string.IsNullOrEmpty(user.PasswordHash) && !PasswordHasher.VerifyPassword(userDto.Password, user.PasswordHash))
             {
                 notifier.AddNotification(new Notification("InvalidCrediatials", $"UserName ou Password estão incorretos"));
                 return null;
@@ -40,7 +41,7 @@ namespace TodoApp.API.UseCases
             var user = new User()
             {
                 UserName = userDto.UserName,
-                PasswordHash = userDto.Password
+                PasswordHash = PasswordHasher.HashPassword(userDto.Password)
             };
 
             await repository.AddAsync(user);
