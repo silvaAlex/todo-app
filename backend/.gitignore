@@ -1,0 +1,29 @@
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.sln.docstates
+
+# Build Folders
+bin/
+obj/
+out/
+
+# Rider
+.idea/
+
+# Logs
+*.log
+
+# Configurações locais
+appsettings.Local.json
+appsettings.Development.json
+
+# Pacotes NuGet
+*.nupkg
+packages/
+pg_data/**
+!.gitkeep
+
+# Docker Compose (se usar arquivos locais de override)
+docker-compose.override.yml
