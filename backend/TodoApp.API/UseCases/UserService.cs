@@ -32,7 +32,7 @@ namespace TodoApp.API.UseCases
 
             if (userExists != null)
             {
-                notifier.AddNotification(new Notification("UserNameExsit", $"Já existe um usuário com esse {userDto.UserName}"));
+                notifier.AddNotification(new Notification("UserNameExists", $"Já existe um usuário com esse {userDto.UserName}"));
                 return null;
             }
 
