@@ -30,7 +30,7 @@ namespace TodoApp.API.UseCases
             return new TaskReadDto(task.Id, task.UserId, task.Title, task.Description, task.Category, task.IsCompleted, task.CreatedAt, task.UpdatedAt);
         }
 
-        public async Task<bool> DeleteTaskAsync(Guid taskId, Guid userId)
+        public async Task DeleteTaskAsync(Guid taskId, Guid userId)
         {
             var task = await repository.GetByIdAndUserAsync(taskId, userId);
 
@@ -38,11 +38,9 @@ namespace TodoApp.API.UseCases
             {
                 await repository.DeleteAsync(task.Id);
                 await repository.SaveChangesAsync();
-                return true;
             }
-       
-            notifier.AddNotification(new Notification("TaskNotFound", $"a tarefa com {taskId} não foi encontrada"));
-            return false;
+            else
+                notifier.AddNotification(new Notification("TaskNotFound", $"a tarefa com {taskId} não foi encontrada"));
         }
 
         public async Task<TaskReadDto?> GetTaskByIdAndUserAsync(Guid taskId, Guid userId)
@@ -74,7 +72,7 @@ namespace TodoApp.API.UseCases
 
             if (task == null)
             {
-                notifier.AddNotification(new Notification("TaskNotFound", $"a task com {taskId} não foi encontrada"));
+                notifier.AddNotification(new Notification("TaskNotFound", $"a tarefa com {taskId} não foi encontrada"));
                 return null;
             }
 
