@@ -23,12 +23,13 @@ namespace ToDoApp.Web.Client
 
         public HttpClient Client = _lazyClient.Value;
 
-        public void SetAuthToken(string token)
+        public void AddAuthorization()
         {
-            if (string.IsNullOrEmpty(token))
-                Client.DefaultRequestHeaders.Authorization = null;
-            else
+            var token = Helpers.AuthSession.GetToken();
+            if (!string.IsNullOrEmpty(token))
+            {
                 Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
         }
     }
 }

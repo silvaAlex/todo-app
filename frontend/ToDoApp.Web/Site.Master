@@ -7,7 +7,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title><%: Page.Title %> - Meu aplicativo ASP.NET</title>
+    <title><%: Page.Title %> - ToDo App</title>
 
     <asp:PlaceHolder runat="server">
         <%: Scripts.Render("~/bundles/modernizr") %>
@@ -15,7 +15,7 @@
 
     <webopt:bundlereference runat="server" path="~/Content/css" />
     <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 </head>
 <body>
     <form runat="server">
@@ -38,25 +38,22 @@
                 <%--Site Scripts--%>
             </Scripts>
         </asp:ScriptManager>
-
-        <div class="navbar navbar-inverse navbar-fixed-top">
-            <div class="container">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" runat="server" href="~/">ToDo</a>
-                </div>
-            </div>
-        </div>
+        
         <div class="container body-content">
+            <header class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-bottom">
+                <div>
+                    <asp:LinkButton runat="server" ID="btnLogout" OnClick="btnLogout_Click" Text="Sair" CssClass="btn btn-outline-danger">
+                        <i class="bi bi-person-slash"></i> Sair
+                    </asp:LinkButton>
+                </div>
+            </header>
             <asp:ContentPlaceHolder ID="MainContent" runat="server">
             </asp:ContentPlaceHolder>
             <hr />
-            <footer class="footer-fixed-bottom">
-                <p>&nbsp; &copy; <%: DateTime.Now.Year %> - ToDo</p>
+            <footer class="footer">
+                <div class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
+                    <p>&nbsp; &copy; <%: DateTime.Now.Year %> - ToDo</p>
+                </div>
             </footer>
         </div>
 

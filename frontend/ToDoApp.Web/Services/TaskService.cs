@@ -13,8 +13,7 @@ namespace ToDoApp.Web.Pages
         public TaskService()
         {
             _api = new ApiClient();
-            var token = Helpers.AuthSession.GetToken();
-            _api.SetAuthToken(token);
+            _api.AddAuthorization();
         }
 
         public async Task<List<TaskResponse>> GetAllTasksAsync()
@@ -28,7 +27,7 @@ namespace ToDoApp.Web.Pages
 
         public async Task<TaskResponse> GetTasksByIdAsync(Guid id)
         {
-            var response = await _api.Client.GetAsync($"api/tasks/{id}");
+            var response = await _api.Client.GetAsync($"api/tasks/{id}").ConfigureAwait(false);
 
             if (!response.IsSuccessStatusCode)
                 return null;
@@ -38,7 +37,7 @@ namespace ToDoApp.Web.Pages
 
         public async Task<TaskResponse> CreateTaskAsync(TaskRequest request)
         {
-            var response = await _api.Client.PostAsJsonAsync($"api/tasks", request);
+            var response = await _api.Client.PostAsJsonAsync($"api/tasks", request).ConfigureAwait(false);
 
             if (!response.IsSuccessStatusCode)
                 return null;
@@ -48,7 +47,7 @@ namespace ToDoApp.Web.Pages
 
         public async Task<TaskResponse> UpdateTaskAsync(Guid id, TaskRequest request)
         {
-            var response = await _api.Client.PutAsJsonAsync($"api/tasks/{id}", request);
+            var response = await _api.Client.PutAsJsonAsync($"api/tasks/{id}", request).ConfigureAwait(false);
 
             if (!response.IsSuccessStatusCode)
                 return null;
@@ -58,20 +57,20 @@ namespace ToDoApp.Web.Pages
 
         public async Task<bool> CompleteTaskAsync(Guid id)
         {
-            var response = await _api.Client.PatchAsJsonAsync($"api/tasks/{id}", "");
+            var response = await _api.Client.PatchAsJsonAsync($"api/tasks/{id}", "").ConfigureAwait(false);
 
             return response.IsSuccessStatusCode;
         }
 
-        public async Task<bool> DeletTaskAsync(Guid id)
+        public async Task<bool> DeleteTaskAsync(Guid id)
         {
-            var response = await _api.Client.DeleteAsync($"api/tasks/{id}");
+            var response = await _api.Client.DeleteAsync($"api/tasks/{id}").ConfigureAwait(false);
             return response.IsSuccessStatusCode;
         }
 
         public async Task<List<TaskResponse>> GetTasksByCategoryAsync(string category)
         {
-            var response = await _api.Client.GetAsync($"api/tasks/category/{category}");
+            var response = await _api.Client.GetAsync($"api/tasks/category/{category}").ConfigureAwait(false);
 
             if (!response.IsSuccessStatusCode)
                 return new List<TaskResponse>();
