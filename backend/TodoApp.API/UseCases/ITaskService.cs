@@ -6,7 +6,7 @@ namespace TodoApp.API.UseCases;
 public interface ITaskService
 {
     IReadOnlyCollection<Notification> Notifications { get; }
-    Task<TaskReadDto?> GetTaskByIdAsync(Guid taskId);
+    Task<TaskReadDto?> GetTaskByIdAndUserAsync(Guid taskId, Guid userId);
     Task<TaskReadDto?> CreateTaskAsync(TaskCreatedDto taskCreatedDto);
     Task<TaskReadDto?> UpdateTaskAsync(TaskUpdateDto taskUpdateDto, Guid taskId);
     Task DeleteTaskAsync(Guid taskId);

@@ -42,5 +42,14 @@ public class TaskRepository(TodoAppDbContext context, DomainNotifier notifier) :
         Update(entity);
         await SaveChangesAsync();
     }
+
+    public async Task<TaskModel?> GetByIdAndUserAsync(Guid taskId, Guid userId)
+    {
+        var entity = await _dbSet
+            .Where(x=>x.Id == taskId && x.UserId == userId)
+            .FirstOrDefaultAsync();
+
+        return entity;
+    }
 }
 

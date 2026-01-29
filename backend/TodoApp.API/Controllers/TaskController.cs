@@ -21,8 +21,6 @@ namespace TodoApp.API.Controllers
             return Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
         }
 
-
-
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] TaskCreateRequest taskCreated)
         {
@@ -49,7 +47,8 @@ namespace TodoApp.API.Controllers
         [HttpGet("{id:Guid}")]
         public async Task<IActionResult> GetTaskById(Guid id)
         {
-            var result = await _taskService.GetTaskByIdAsync(id);
+            var userId = GetUserId();
+            var result = await _taskService.GetTaskByIdAndUserAsync(id, userId);
 
             if (_notifier.HasNotifications)
                 return NotFound(_notifier.Notifications);

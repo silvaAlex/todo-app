@@ -35,9 +35,9 @@ namespace TodoApp.API.UseCases
             await repository.DeleteAsync(taskId);
         }
 
-        public async Task<TaskReadDto?> GetTaskByIdAsync(Guid taskId)
+        public async Task<TaskReadDto?> GetTaskByIdAndUserAsync(Guid taskId, Guid userId)
         {
-            var task = await repository.GetByIdAsync(taskId);
+            var task = await repository.GetByIdAndUserAsync(taskId, userId);
 
             if(task != null)
                 return new TaskReadDto(task.Id, task.UserId, task.Title, task.Description, task.Category, task.IsCompleted, task.CreatedAt, task.UpdatedAt);
