@@ -14,7 +14,13 @@ namespace TodoApp.API.UseCases
         {
             User? user = await repository.GetUserByUserName(userDto.UserName);
 
-            if (user == null || !string.IsNullOrEmpty(user.PasswordHash) && !PasswordHasher.VerifyPassword(userDto.Password, user.PasswordHash))
+            if (user == null)
+            {
+                notifier.AddNotification(new Notification("UserNotFound", $"a usuário com {userDto.UserName} não foi encontrado"));
+                return null;
+            }
+
+            if (!string.IsNullOrEmpty(user.PasswordHash) && !PasswordHasher.VerifyPassword(userDto.Password, user.PasswordHash))
             {
                 notifier.AddNotification(new Notification("InvalidCrediatials", $"UserName ou Password estão incorretos"));
                 return null;

@@ -35,9 +35,19 @@ namespace TodoApp.API.UseCases
             await repository.DeleteAsync(taskId);
         }
 
-        public async Task<IEnumerable<TaskReadDto>> GetTasksByCategoryAsync(string category)
+        public async Task<TaskReadDto?> GetTaskByIdAsync(Guid taskId)
         {
-            var tasks = await repository.GetTasksByCategory(category);
+            var task = await repository.GetByIdAsync(taskId);
+
+            if(task != null)
+                return new TaskReadDto(task.Id, task.UserId, task.Title, task.Description, task.Category, task.IsCompleted, task.CreatedAt, task.UpdatedAt);
+
+            return null;
+        }
+
+        public async Task<IEnumerable<TaskReadDto>> GetTasksByCategoryAsync(string category, Guid userId)
+        {
+            var tasks = await repository.GetTasksByCategory(category, userId);
             return tasks.Select(t => new TaskReadDto(t.Id, t.UserId, t.Title, t.Description, t.Category, t.IsCompleted, t.CreatedAt, t.UpdatedAt));
         }
 
