@@ -27,11 +27,6 @@ namespace TodoApp.API.Repositories
             if (entity != null) _dbSet.Remove(entity);
         }
 
-        public async Task<ICollection<T>> GetAllAsync()
-        {
-           return await _dbSet.ToListAsync();
-        }
-
         public async Task<T?> GetByIdAsync(Guid id)
         {
            var entity = await _dbSet.FindAsync(id);

@@ -9,10 +9,10 @@ public class TaskRepository(TodoAppDbContext context, DomainNotifier notifier) :
 {
     private readonly DomainNotifier _notifier = notifier;
 
-    public async Task<IEnumerable<TaskModel>> GetTasksByCategory(string category)
+    public async Task<IEnumerable<TaskModel>> GetTasksByCategory(string category, Guid userId)
     {
         List<TaskModel> tasks;
-        tasks = await _dbSet.Where(t => t.Category == category).ToListAsync();
+        tasks = await _dbSet.Where(t => t.Category == category && t.UserId == userId).ToListAsync();
 
         return tasks ?? [];
     }
@@ -37,6 +37,7 @@ public class TaskRepository(TodoAppDbContext context, DomainNotifier notifier) :
 
         entity.IsCompleted = true;
         entity.UpdatedAt = DateTime.UtcNow;
+        entity.Category = "Done";
 
         Update(entity);
         await SaveChangesAsync();
