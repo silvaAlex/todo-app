@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using TodoApp.API.DTOs;
 using TodoApp.API.Notifications;
@@ -59,7 +58,8 @@ namespace TodoApp.API.Controllers
         [HttpPut("{id:Guid}")]
         public async Task<IActionResult> Update(Guid id, [FromBody] TaskUpdateDto task)
         {
-            var result = await _taskService.UpdateTaskAsync(task, id);
+            var userId = GetUserId();
+            var result = await _taskService.UpdateTaskAsync(task, id, userId);
 
             if (_notifier.HasNotifications)
                 return BadRequest(_notifier.Notifications);
@@ -81,7 +81,8 @@ namespace TodoApp.API.Controllers
         [HttpDelete("{id:Guid}")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            await _taskService.DeleteTaskAsync(id);
+            var userId = GetUserId();
+            await _taskService.DeleteTaskAsync(id, userId);
 
             if (_notifier.HasNotifications)
                 return BadRequest(_notifier.Notifications);

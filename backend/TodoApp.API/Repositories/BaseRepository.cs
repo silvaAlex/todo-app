@@ -5,7 +5,7 @@ using TodoApp.API.Notifications;
 
 namespace TodoApp.API.Repositories
 {
-    public abstract class BaseRepository<T>(TodoAppDbContext context, DomainNotifier notifier) : IRepository<T> where T : class
+    public abstract class BaseRepository<T>(TodoAppDbContext context) : IRepository<T> where T : class
     {
         protected DbSet<T> _dbSet = context.Set<T>();
 
@@ -18,24 +18,13 @@ namespace TodoApp.API.Repositories
         {
             var entity = await _dbSet.FindAsync(id);
 
-            if (entity == null)
-            {
-                notifier.AddNotification(new Notification("TaskNotFound", $"a task com {id} não foi encontrada"));
-                return;
-            }
-
-            if (entity != null) _dbSet.Remove(entity);
+            if (entity != null) 
+                _dbSet.Remove(entity);
         }
 
         public async Task<T?> GetByIdAsync(Guid id)
         {
            var entity = await _dbSet.FindAsync(id);
-
-            if (entity == null)
-            {
-                notifier.AddNotification(new Notification("TaskNotFound", $"a task com {id} não foi encontrada"));
-                return null;
-            }
             return entity;
         }
 

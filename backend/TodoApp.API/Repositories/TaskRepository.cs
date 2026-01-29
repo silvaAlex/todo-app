@@ -1,14 +1,11 @@
 ﻿using TodoApp.Api.Models;
 using TodoApp.API.Data;
 using Microsoft.EntityFrameworkCore;
-using TodoApp.API.Notifications;
 
 namespace TodoApp.API.Repositories;
 
-public class TaskRepository(TodoAppDbContext context, DomainNotifier notifier) : BaseRepository<TaskModel>(context, notifier), ITaskRepository
+public class TaskRepository(TodoAppDbContext context) : BaseRepository<TaskModel>(context), ITaskRepository
 {
-    private readonly DomainNotifier _notifier = notifier;
-
     public async Task<IEnumerable<TaskModel>> GetTasksByCategory(string category, Guid userId)
     {
         List<TaskModel> tasks;
@@ -29,18 +26,15 @@ public class TaskRepository(TodoAppDbContext context, DomainNotifier notifier) :
     {
         var entity = await GetByIdAsync(id);
 
-        if (entity == null)
+        if (entity != null)
         {
-            _notifier.AddNotification(new Notification("TaskNotFound", $"a task com {id} não foi encontrada"));
-            return;
+            entity.IsCompleted = true;
+            entity.UpdatedAt = DateTime.UtcNow;
+            entity.Category = "Done";
+
+            Update(entity);
+            await SaveChangesAsync();
         }
-
-        entity.IsCompleted = true;
-        entity.UpdatedAt = DateTime.UtcNow;
-        entity.Category = "Done";
-
-        Update(entity);
-        await SaveChangesAsync();
     }
 
     public async Task<TaskModel?> GetByIdAndUserAsync(Guid taskId, Guid userId)

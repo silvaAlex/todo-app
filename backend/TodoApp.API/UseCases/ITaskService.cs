@@ -8,8 +8,8 @@ public interface ITaskService
     IReadOnlyCollection<Notification> Notifications { get; }
     Task<TaskReadDto?> GetTaskByIdAndUserAsync(Guid taskId, Guid userId);
     Task<TaskReadDto?> CreateTaskAsync(TaskCreatedDto taskCreatedDto);
-    Task<TaskReadDto?> UpdateTaskAsync(TaskUpdateDto taskUpdateDto, Guid taskId);
-    Task DeleteTaskAsync(Guid taskId);
+    Task<TaskReadDto?> UpdateTaskAsync(TaskUpdateDto taskUpdateDto, Guid taskId, Guid userId);
+    Task<bool> DeleteTaskAsync(Guid taskId, Guid userId);
     Task<IEnumerable<TaskReadDto>> GetTasksByUserAsync(Guid userId);
     Task<IEnumerable<TaskReadDto>> GetTasksByCategoryAsync(string category, Guid userId);
     Task CompleteTaskAsync(Guid taskId);

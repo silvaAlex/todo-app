@@ -30,18 +30,29 @@ namespace TodoApp.API.UseCases
             return new TaskReadDto(task.Id, task.UserId, task.Title, task.Description, task.Category, task.IsCompleted, task.CreatedAt, task.UpdatedAt);
         }
 
-        public async Task DeleteTaskAsync(Guid taskId)
+        public async Task<bool> DeleteTaskAsync(Guid taskId, Guid userId)
         {
-            await repository.DeleteAsync(taskId);
+            var task = await repository.GetByIdAndUserAsync(taskId, userId);
+
+            if (task != null)
+            {
+                await repository.DeleteAsync(task.Id);
+                await repository.SaveChangesAsync();
+                return true;
+            }
+       
+            notifier.AddNotification(new Notification("TaskNotFound", $"a tarefa com {taskId} não foi encontrada"));
+            return false;
         }
 
         public async Task<TaskReadDto?> GetTaskByIdAndUserAsync(Guid taskId, Guid userId)
         {
             var task = await repository.GetByIdAndUserAsync(taskId, userId);
 
-            if(task != null)
+            if (task != null)
                 return new TaskReadDto(task.Id, task.UserId, task.Title, task.Description, task.Category, task.IsCompleted, task.CreatedAt, task.UpdatedAt);
 
+            notifier.AddNotification(new Notification("TaskNotFound", $"a tarefa com {taskId} não foi encontrada"));
             return null;
         }
 
@@ -54,12 +65,12 @@ namespace TodoApp.API.UseCases
         public async Task<IEnumerable<TaskReadDto>> GetTasksByUserAsync(Guid userId)
         {
             var tasks = await repository.GetTasksByUserAsync(userId);
-            return tasks.Select(t => new TaskReadDto(t.Id, t.UserId, t.Title,t.Description, t.Category,t.IsCompleted, t.CreatedAt, t.UpdatedAt));
+            return tasks.Select(t => new TaskReadDto(t.Id, t.UserId, t.Title, t.Description, t.Category, t.IsCompleted, t.CreatedAt, t.UpdatedAt));
         }
 
-        public async Task<TaskReadDto?> UpdateTaskAsync(TaskUpdateDto taskUpdateDto, Guid taskId)
+        public async Task<TaskReadDto?> UpdateTaskAsync(TaskUpdateDto taskUpdateDto, Guid taskId, Guid userId)
         {
-            var task = await repository.GetByIdAsync(taskId);
+            var task = await repository.GetByIdAndUserAsync(taskId, userId);
 
             if (task == null)
             {
